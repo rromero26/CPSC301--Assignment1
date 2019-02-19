@@ -11,7 +11,8 @@ struct  PERSON {
 };
 //--------------------------------------------------------------------------------------------------
 
-void countRecords(int numOfCustomers){
+int countRecords(){
+    int numOfCustomers = 0;
     string line;
     fstream myFile;                      //open file
     myFile.open("data.txt");
@@ -23,6 +24,7 @@ void countRecords(int numOfCustomers){
       numOfCustomers++;
     }
     myFile.close();
+    return numOfCustomers;
   }
 //--------------------------------------------------------------------------------------------------
 
@@ -31,33 +33,37 @@ void readingData(PERSON myArray[], int numOfCustomers){
   string myStr1;
   string myStr2;
   string fullName;
+  float myBal = 0.0;
   int counter = 0;
+
   fstream myFile;
   myFile.open("data.txt");
   if(!myFile) {                          //check if file open properly
       exit(1);
   }
-
   while(counter < numOfCustomers) {
     myFile >> myStr1;
     myFile >> myStr2;
+    myFile >> myBal;
     fullName = myStr1 + " " + myStr2;
-    strcpy(aNames, fullName.c_str());
-    myArray[counter].Name = aNames;
+    strcpy(myArray[counter].Name, fullName.c_str());
+    myArray[counter].Balance = myBal;
     counter ++;
   }
   myFile.close();
 }
 //----------------------------------------------------------------------------------------------------
 
-void display(PERSON myArray[], int numOfCustomers){
+void display(PERSON myArray[], int numOfCustomers){   //Based on numOfCustomers, will print out that many
   int counter2 = 0;
-  cout << "Name                Balance" << endl;
+
+  cout << "Name              Balance" << endl;
   cout << "---------------------------------------------" << endl;
   while (counter2 < numOfCustomers){
-    cout << myArray[counter2].Name << "   " << myArray[counter2].Balance << endl;
+    cout << myArray[counter2].Name << "     " << myArray[counter2].Balance << endl;
     counter2++;
   }
+  cout << endl;
   cout << endl;
 }
 //----------------------------------------------------------------------------------------------------
@@ -72,7 +78,8 @@ void FindRichest(PERSON myArray[], int numOfCustomers){
       temp = i;
     }
   }
-  cout << "The customer with the Highest balance is: " << myArray[temp].Name;
+  cout << "The customer with the Highest balance is:  " << myArray[temp].Name << endl;
+  cout << endl;
 }
 //-----------------------------------------------------------------------------------------------------
 
@@ -84,11 +91,12 @@ void deposit(string userName,PERSON myArray[], int numOfCustomers){
       }
   }
   float userDeposit = 0.0;
-  cout << userName << " , how much would you like to deposit? ";
+  cout << userName << ", how much would you like to deposit? ";
   cin >> userDeposit;
-
+  cout << endl;
+  cout << endl;
   myArray[temp].Balance = myArray[temp].Balance + userDeposit;
-  cout << "Your new balance is: " << myArray[temp].Balance;
+  cout << "Your new balance is:  " << myArray[temp].Balance << endl;
 
 }
 //---------------------------------------------------------------------------------------------
@@ -107,22 +115,21 @@ void newCopy(PERSON myArray[], int numOfCustomers){
 //---------------------------------------------------------------------------------------------
 
 int main() {
-  int numOfCustomers = 0;
-
-  countRecords(numOfCustomers);
+  int numOfCustomers = countRecords();
   PERSON myArray[numOfCustomers];
-
+//----------------------------------------------------
   readingData(myArray, numOfCustomers);
-
+//----------------------------------------------------
   display(myArray, numOfCustomers);
-
+//----------------------------------------------------
   FindRichest(myArray, numOfCustomers);
-
+//----------------------------------------------------
   string userName;
   cout << "Enter your full name to deposit money: ";
-  cin >> userName;
+  getline(cin, userName);
   deposit(userName, myArray, numOfCustomers);
-
+//----------------------------------------------------
   newCopy(myArray, numOfCustomers);
+//----------------------------------------------------
   return 0;
 }
