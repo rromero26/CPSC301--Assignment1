@@ -53,9 +53,6 @@ PERSON * readData(int numOfCustomers){
     fullName = firstName + ' ' + lastName;     //save full name from file
     strcpy(tempArrayPtr[counter].Name, fullName.c_str());
 
-    //strcpy(tempArrayPtr[counter].Name, fullCharName);
-    //tempArrayPtr[counter].Name = fullCharName;
-
     tempFile >> tempArrayPtr[counter].Balance;  //Blance is save into dynamic array
     counter ++;
   }
@@ -70,7 +67,9 @@ void display(PERSON myArray[], int numOfCustomers){
   cout << "Name                Balance" << endl;
   cout << "---------------------------------------------" << endl;
   while (counter2 < numOfCustomers){
-    cout << myArray[counter2].Name << "   " << myArray[counter2].Balance << endl;
+    cout << myArray[counter2].Name << "   ";
+    printf( "%.2f",myArray[counter2].Balance);
+    cout << endl;
     counter2++;
   }
 }
@@ -88,24 +87,29 @@ void FindRichest(PERSON myArray[], int numOfCustomers){
   }
   cout << "The customer with the Highest balance is: " << myArray[temp].Name;
 }
-//------------------------------------------------------------------------------
 
 void Deposit(PERSON myArray[], int numOfCustomers, string userName, float userDeposit){
   int temp = 0;
   for(int x = 0; x < numOfCustomers; x++) {
       if(userName == myArray[x].Name){
-        temp = x;
+        temp = x + 1;                    // Note: next comment will explain the +1
       }
   }
+        //Name is not found in 'myArray', temp = 0. BUT Maria Brown index is 0
+        //This causes an error so we add 1 whenever a name is found in myArray and later
+        //subtract 1 after the 'myArray' check.
+
   if (temp == 0){
     cout << "ERROR: name not found in records." << endl;
     return;
   }
 
+  temp = temp - 1;                       // here the -1 mention from previous comment
   myArray[temp].Balance = myArray[temp].Balance + userDeposit;
-  cout << "Your new balance is: " << myArray[temp].Balance;
+  cout << "Your new balance is: ";     //<< myArray[temp].Balance;
+  printf( "%.2f",myArray[temp].Balance);
+  cout << endl;
 }
-//------------------------------------------------------------------------------
 
 void newCopy(PERSON myArray[], int numOfCustomers){
   ofstream theFile;
@@ -145,6 +149,7 @@ int main(){
     cout << "4) Close program (will also update any changes to file)" << endl;
     cout << "----------------------------------------------------------" << endl << endl;
     cin >> userInput;
+    cin.ignore();
 
     if(userInput == 1){
       cout << endl;
@@ -160,11 +165,17 @@ int main(){
 
     if(userInput == 3){
       string userName;
+      string tempFname;
+      string tempLname;
       cout << "Enter your full name to deposit: " << endl;
-      getline(cin, userName);
+      cin >> tempFname;
+      cin >> tempLname;
+      userName = tempFname + " " + tempLname;
+      cout << endl;
+
 
       float userDeposit = 0.0;
-      cout << userName << " , how much would you like to deposit? ";
+      cout << userName << ", how much would you like to deposit? ";
       cin >> userDeposit;
       Deposit(myArrayPtr, numOfCustomers, userName, userDeposit);
       cout << endl << endl;
